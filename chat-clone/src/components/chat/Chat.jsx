@@ -3,18 +3,17 @@ import AttachFile from "@material-ui/icons/AttachFile";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
 import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
-import Pusher from "pusher-js";
 import axios from "../../axios/axios";
 import MicIcon from "@material-ui/icons/Mic";
 import "./chat.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 
-export default function Chat() {
-  const [messages, setMessages] = useState([]);
+export default function Chat({ messages }) {
   const [ input, setInput ] = useState('');
 
-   const sendMessage = async (e) =>{
+
+  const sendMessage = async (e) =>{
     e.preventDefault();
     await axios.post('/api/v1/messages/new', {
       message: input,
@@ -25,37 +24,6 @@ export default function Chat() {
 
     setInput('')
    }
-
-
-
-
-  useEffect(() => {
-    try {
-      axios.get("/api/v1/messages").then((res) => {
-        setMessages(res.data);
-      });
-    } catch (error) {
-      console.log(error.res.data)
-    }
-  }, []);
-
-
-  useEffect(() => {
-    const pusher = new Pusher("177872d32245dcb43401", {
-      cluster: "eu",
-    });
-
-    const channel = pusher.subscribe("chatChannel");
-    channel.bind("pushChat",  (data) => {
-      // alert(JSON.stringify(data));
-      setMessages([...messages, data])
-    });
-
-    return ()=>{
-      channel.unsubscribe()
-      channel.unbind_all()     
-    }
-  }, [messages]);
 
 
 
