@@ -11,9 +11,7 @@ import { useState } from "react";
 
 export default function Chat({ messages }) {
   const [ input, setInput ] = useState('');
-
-
-
+  
   const sendMessage = async (e) =>{
     e.preventDefault();
     await axios.post('/api/v1/messages/new', {
